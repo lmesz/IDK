@@ -27,10 +27,10 @@ func main() {
 
 	dir := tview.NewTreeView()
 	root := tview.NewTreeNode(".")
-	dir.SetRoot(root)
+	dir.SetRoot(root).SetCurrentNode(root)
 
 	for {
-		battrs, err := it.Next()
+		attrs, err := it.Next()
 		if err == iterator.Done {
 			break
 		}
@@ -39,7 +39,7 @@ func main() {
 			panic(err)
 		}
 
-		node := tview.NewTreeNode(battrs.Name)
+		node := tview.NewTreeNode(attrs.Name)
 		root.AddChild(node)
 	}
 
