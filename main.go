@@ -6,12 +6,13 @@ import (
 	"fmt"
 	"github.com/rivo/tview"
 	"google.golang.org/api/iterator"
+	"os"
 	"time"
 )
 
-const PROJECT_ID = "core-dev-341718"
-
 func main() {
+
+	PROJECT_ID := os.Getenv("PROJECT_ID")
 
 	ctx := context.Background()
 	client, err := storage.NewClient(ctx)
