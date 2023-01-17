@@ -3,7 +3,6 @@ package main
 import (
 	"cloud.google.com/go/storage"
 	"context"
-	"fmt"
 	"github.com/rivo/tview"
 	"google.golang.org/api/iterator"
 	"os"
@@ -12,7 +11,7 @@ import (
 
 func main() {
 
-	PROJECT_ID := os.Getenv("PROJECT_ID")
+	BUCKET := os.Getenv("BUCKET")
 
 	ctx := context.Background()
 	client, err := storage.NewClient(ctx)
@@ -24,7 +23,11 @@ func main() {
 	ctx, cancel := context.WithTimeout(ctx, time.Second*30)
 	defer cancel()
 
-	it := client.Buckets(ctx, PROJECT_ID)
+	it := client.Bucket(BUCKET).Objects(ctx, nil)
+
+	dir := tview.NewTreeView()
+	root := tview.NewTreeNode(".")
+	dir.SetRoot(root)
 
 	for {
 		battrs, err := it.Next()
@@ -36,13 +39,11 @@ func main() {
 			panic(err)
 		}
 
-		fmt.Println(battrs.Name)
-
+		node := tview.NewTreeNode(battrs.Name)
+		root.AddChild(node)
 	}
 
 	app := tview.NewApplication()
-
-	dir := tview.NewBox().SetBorder(true).SetTitle("Dir")
 
 	leftPane := tview.NewBox().SetBorder(true).SetTitle("Left")
 	rightPane := tview.NewBox().SetBorder(true).SetTitle("Right")
